@@ -12,7 +12,7 @@ Add double tap, triple tap, etc detection to your TMC scripts.
 
 ## How to :
 Each button that you want to assign outputs to needs the following:
-* **define ButtonName n** - the index in the array where the corresponding button's tap counts are stored
+* **define ButtonName n** - the index in the array where the corresponding button's tap counts are stored. Separate counters are used to avoid conflict between buttons
 * **MapKey**
 * **MapKeyR**
 * **MultiTap_ButtonName()** - Assign individual commands to be performed upon tap/long press/double tap, etc. One function per layer, might be overkill though.

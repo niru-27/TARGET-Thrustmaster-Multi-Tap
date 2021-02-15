@@ -15,4 +15,9 @@ Each button that you want to assign outputs to needs the following:
 * **define ButtonName n** - the index in the array where the corresponding button's tap counts are stored
 * **MapKey**
 * **MapKeyR**
-* **MultiTap_ButtonName()** - Assign individual commands to be performed upon tap/long press/double tap, etc
+* **MultiTap_ButtonName()** - Assign individual commands to be performed upon tap/long press/double tap, etc. One function per layer, might be overkill though.
+
+
+Check the example script with TWCS throttle's buttons 12 & 14 (THAT3R & THAT3L).
+
+Adapt for other devices/buttons as required.

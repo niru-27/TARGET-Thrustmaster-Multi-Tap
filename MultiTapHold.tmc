@@ -1,0 +1,149 @@
+// Multi Tap +/- Hold Pattern Detector
+// No fast button switching conflict
+
+include "target.tmh"
+
+
+int count[10]={0},held[10]={0}; 	// count = no. of taps,		held = button held in the end
+define MTtimeout 400				// Timeout to detect the end of the multi-tap sequence
+define iTHAT3L 0					//Array index for THAT3L
+define iTHAT3R 1					//Array index for THAT3L
+
+int main() {
+	Configure(&HCougar, MODE_EXCLUDED);
+	Configure(&Joystick, MODE_EXCLUDED);
+	Configure(&JoystickF18, MODE_EXCLUDED);
+	Configure(&Throttle, MODE_EXCLUDED);
+	Configure(&A320Pilot, MODE_EXCLUDED);
+	Configure(&A320Copilot, MODE_EXCLUDED);
+	Configure(&TCAQuadrant12, MODE_EXCLUDED);
+	Configure(&TCAQuadrant34, MODE_EXCLUDED);
+	Configure(&T16000L, MODE_EXCLUDED);
+	Configure(&LMFD, MODE_EXCLUDED);
+	Configure(&RMFD, MODE_EXCLUDED);
+	Configure(&TFRPRudder, MODE_EXCLUDED);
+	Configure(&TFRPHARudder, MODE_EXCLUDED);
+
+if(Init(&EventHandle)) return 1; // declare the event handler, return on error
+	
+	MapKey(&TWCSThrottle, THAT3L, 
+		EXEC(
+			"DeferCall( MTtimeout, &MultiTap_THAT3L, count[iTHAT3L] );"
+			"count[iTHAT3L] = count[iTHAT3L] + 1;"
+			"held[iTHAT3L] = 1;"
+			)
+		);
+	MapKeyR(&TWCSThrottle, THAT3L, 
+		EXEC(
+			"held[iTHAT3L] = 0;"
+			)
+		);
+	
+	
+	MapKey(&TWCSThrottle, THAT3R, 
+		EXEC(
+			"DeferCall( MTtimeout, &MultiTap_THAT3R, count[iTHAT3R] );"
+			"count[iTHAT3R] = count[iTHAT3R] + 1;"
+			"held[iTHAT3R] = 1;"
+			)
+		);
+	MapKeyR(&TWCSThrottle, THAT3R, 
+		EXEC(
+			"held[iTHAT3R] = 0;"
+			)
+		);
+	
+}
+
+int MultiTap_THAT3L(int prev)
+{
+	if ( prev == count[iTHAT3L]-1)					//No new taps received in MTtimeout period
+	{
+		if (count[iTHAT3L])
+		{
+			printf("%d : %d\xa", count[iTHAT3L], held[iTHAT3L]);
+		
+			if (count[iTHAT3L]==1 & held[iTHAT3L]==0)				//Single tap
+			{
+				ActKey(KEYON+PULSE+'1');
+				ActKey(KEYON+PULSE+DX1);	
+			}
+			else 
+			if (count[iTHAT3L]==1 & held[iTHAT3L]==1)				//Long press
+			{
+				ActKey(KEYON+PULSE+'a');		
+			}
+			
+			else if (count[iTHAT3L]==2 & held[iTHAT3L]==0)			//Double tap
+			{
+				ActKey(KEYON+PULSE+'2');
+			}
+			else if (count[iTHAT3L]==2 & held[iTHAT3L]==1)			//Double tap + hold
+			{
+				ActKey(KEYON+PULSE+'b');
+			}
+			
+			else if (count[iTHAT3L]==3 & held[iTHAT3L]==0)			//Triple tap
+			{
+				ActKey(KEYON+PULSE+'3');
+			}
+			else if (count[iTHAT3L]==3 & held[iTHAT3L]==1)			//Triple tap + hold
+			{
+				ActKey(KEYON+PULSE+'c');
+			}
+		}
+		
+		count[iTHAT3L] = 0;										//Reset tap sequence
+	}
+}
+
+
+int MultiTap_THAT3R(int prev)
+{
+	if ( prev == count[iTHAT3R]-1)					//No new taps received in MTtimeout period
+	{
+		if (count[iTHAT3R])
+		{
+			printf("%d : %d\xa", count[iTHAT3R], held[iTHAT3R]);
+		
+			if (count[iTHAT3R]==1 & held[iTHAT3R]==0)				//Single tap
+			{
+				ActKey(KEYON+PULSE+'4');
+				ActKey(KEYON+PULSE+DX2);	
+			}
+			else 
+			if (count[iTHAT3R]==1 & held[iTHAT3R]==1)				//Long press
+			{
+				ActKey(KEYON+PULSE+'d');		
+			}
+			
+			else if (count[iTHAT3R]==2 & held[iTHAT3R]==0)			//Double tap
+			{
+				ActKey(KEYON+PULSE+'5');
+			}
+			else if (count[iTHAT3R]==2 & held[iTHAT3R]==1)			//Double tap + hold
+			{
+				ActKey(KEYON+PULSE+'e');
+			}
+			
+			else if (count[iTHAT3R]==3 & held[iTHAT3R]==0)			//Triple tap
+			{
+				ActKey(KEYON+PULSE+'6');
+			}
+			else if (count[iTHAT3R]==3 & held[iTHAT3R]==1)			//Triple tap + hold
+			{
+				ActKey(KEYON+PULSE+'f');
+			}
+		}
+		
+		count[iTHAT3R] = 0;										//Reset tap sequence
+	}
+}
+
+
+//=========================================================
+//event handler
+int EventHandle(int type, alias o, int x)
+{
+    DefaultMapping(&o, x);
+}

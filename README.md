@@ -1,7 +1,7 @@
 # TARGET-Thrustmaster-Multi-Tap
 Add double tap, triple tap, etc detection to your TMC scripts.
 
-## Examples :
+## Detection examples :
 * **single tap**
 * **single tap + hold** aka Long Press (just like Tempo)
 * **double tap**
